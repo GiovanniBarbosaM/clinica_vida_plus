@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pacientes - Clínica Vida+</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>Lista de Pacientes</h1>
+
+    {% if pacientes %}
+        <ul>{% for p in pacientes -%}
+            <li><b>{{ p.nome }}</b> - {{ p.idade }} anos - Tel: {{ p.telefone }}</li>
+        {%- endfor %}</ul>
+
+        <p><b>Total de pacientes:</b> {{ total }}</p>
+        <p><b>Idade média:</b> {{ idade_media }}</p>
+
+        {% if mais_velho %}
+            <p><b>Paciente mais velho:</b> {{ mais_velho.nome }} ({{ mais_velho.idade }} anos)</p>
+        {% endif %}
+    {% else %}
+        <p>Nenhum paciente cadastrado ainda.</p>
+    {% endif %}
+
+    <a href="/">Voltar ao Cadastro</a>
+</body>
+</html>
