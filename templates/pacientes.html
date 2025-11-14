@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pacientes - Clínica Vida+</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .tabela-pacientes {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        .tabela-pacientes th,
+        .tabela-pacientes td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .tabela-pacientes th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        .tabela-pacientes tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-deletar {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
+
+        .btn-deletar:hover {
+            background: #c0392b;
+        }
+
+        .mensagem-vazio {
+            text-align: center;
+            color: #999;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Lista de Pacientes</h1>
+
+        {% if pacientes %}
+            <table class="tabela-pacientes">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Idade</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for paciente in pacientes %}
+                    <tr>
+                        <td>{{ paciente.id }}</td>
+                        <td>{{ paciente.nome }}</td>
+                        <td>{{ paciente.idade }} anos</td>
+                        <td>{{ paciente.telefone }}</td>
+                        <td>
+                            <a href="/deletar/{{ paciente.id }}" class="btn-deletar" 
+                               onclick="return confirm('Tem certeza que deseja excluir este paciente?')">
+                                🗑️ Deletar
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="mensagem-vazio">Nenhum paciente cadastrado ainda.</p>
+        {% endif %}
+
+        <a class="link" href="/">➕ Cadastrar Novo Paciente</a>
+    </div>
+</body>
+</html>
+```
+
