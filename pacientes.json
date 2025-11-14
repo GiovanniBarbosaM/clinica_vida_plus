@@ -1,1 +1,30 @@
-[]
+[
+    {
+        "id": 1,
+        "nome": "Samuel",
+        "idade": "08",
+        "telefone": "(01) 19999-999",
+        "data_cadastro": "14/11/2025 09:59"
+    },
+    {
+        "id": 2,
+        "nome": "giovanni",
+        "idade": "35",
+        "telefone": "0119999999",
+        "data_cadastro": "14/11/2025 10:00"
+    },
+    {
+        "id": 3,
+        "nome": "lidiane",
+        "idade": "20",
+        "telefone": "0119999999",
+        "data_cadastro": "14/11/2025 10:00"
+    },
+    {
+        "id": 4,
+        "nome": "Ana",
+        "idade": "37",
+        "telefone": "0119999999",
+        "data_cadastro": "14/11/2025 10:00"
+    }
+]
