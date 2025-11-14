@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas - Clínica Vida+</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn-voltar">← Voltar ao Menu</a>
+        
+        <h1>📊 Estatísticas dos Pacientes</h1>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-icon">👥</span>
+                <h3>Total de Pacientes</h3>
+                <p class="stat-number">{{ stats.total }}</p>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">📈</span>
+                <h3>Média de Idade</h3>
+                <p class="stat-number">{{ stats.media_idade }} anos</p>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">👶</span>
+                <h3>Paciente Mais Jovem</h3>
+                <p class="stat-number">
+                    {% if stats.mais_jovem %}
+                        {{ stats.mais_jovem }} anos
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-icon">👴</span>
+                <h3>Paciente Mais Velho</h3>
+                <p class="stat-number">
+                    {% if stats.mais_velho %}
+                        {{ stats.mais_velho }} anos
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <a class="link" href="/pacientes">📋 Ver Lista Completa</a>
+    </div>
+</body>
+</html>

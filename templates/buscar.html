@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Paciente - Clínica Vida+</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="btn-voltar">← Voltar ao Menu</a>
+        
+        <h1>🔍 Buscar Paciente</h1>
+
+        <form action="/buscar" method="post" class="form-busca">
+            <div class="campo-busca">
+                <input type="text" name="busca" placeholder="Digite o nome ou ID do paciente" 
+                       value="{{ termo }}" required>
+                <button type="submit">Buscar</button>
+            </div>
+        </form>
+
+        {% if resultado is not none %}
+            {% if resultado %}
+                <h2>Resultados da busca ({{ resultado|length }})</h2>
+                <table class="tabela-pacientes">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Idade</th>
+                            <th>Telefone</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for paciente in resultado %}
+                        <tr>
+                            <td>{{ paciente.id }}</td>
+                            <td>{{ paciente.nome }}</td>
+                            <td>{{ paciente.idade }} anos</td>
+                            <td>{{ paciente.telefone }}</td>
+                            <td>
+                                <a href="/editar/{{ paciente.id }}" class="btn-editar">✏️</a>
+                                <a href="/deletar/{{ paciente.id }}" class="btn-deletar"
+                                   onclick="return confirm('Tem certeza?')">🗑️</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p class="mensagem-vazio">❌ Nenhum paciente encontrado com "{{ termo }}"</p>
+            {% endif %}
+        {% endif %}
+    </div>
+</body>
+</html>

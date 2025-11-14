@@ -3,33 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Pacientes - Clínica Vida+</title>
+    <title>Clínica Vida+ - Menu Principal</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Cadastro de Pacientes</h1>
+        <h1>🏥 Clínica Vida+</h1>
+        <p class="subtitulo">Sistema de Gerenciamento de Pacientes</p>
 
-        <form action="/cadastrar" method="post" class="form-paciente">
-            <div class="campo">
-                <label for="nome">Nome do Paciente:</label>
-                <input type="text" id="nome" name="nome" placeholder="Digite o nome completo" required>
-            </div>
+        <div class="menu-grid">
+            <a href="/cadastrar-form" class="menu-item">
+                <span class="icon">➕</span>
+                <h3>Cadastrar Paciente</h3>
+                <p>Adicionar novo paciente ao sistema</p>
+            </a>
 
-            <div class="campo">
-                <label for="idade">Idade:</label>
-                <input type="number" id="idade" name="idade" placeholder="Ex: 35" min="0" required>
-            </div>
+            <a href="/estatisticas" class="menu-item">
+                <span class="icon">📊</span>
+                <h3>Ver Estatísticas</h3>
+                <p>Visualizar dados e análises</p>
+            </a>
 
-            <div class="campo">
-                <label for="telefone">Telefone:</label>
-                <input type="tel" id="telefone" name="telefone" placeholder="(99) 99999-9999" required>
-            </div>
+            <a href="/buscar" class="menu-item">
+                <span class="icon">🔍</span>
+                <h3>Buscar Paciente</h3>
+                <p>Encontrar paciente por nome ou ID</p>
+            </a>
 
-            <button type="submit">Cadastrar Paciente</button>
-        </form>
-
-        <a class="link" href="/pacientes">📋 Ver Lista de Pacientes</a>
+            <a href="/pacientes" class="menu-item">
+                <span class="icon">📋</span>
+                <h3>Listar Pacientes</h3>
+                <p>Ver todos os pacientes cadastrados</p>
+            </a>
+        </div>
     </div>
 </body>
 </html>

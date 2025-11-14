@@ -5,58 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Pacientes - Clínica Vida+</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        .tabela-pacientes {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        .tabela-pacientes th,
-        .tabela-pacientes td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .tabela-pacientes th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-weight: 600;
-        }
-
-        .tabela-pacientes tr:hover {
-            background-color: #f5f5f5;
-        }
-
-        .btn-deletar {
-            background: #e74c3c;
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-block;
-        }
-
-        .btn-deletar:hover {
-            background: #c0392b;
-        }
-
-        .mensagem-vazio {
-            text-align: center;
-            color: #999;
-            margin: 30px 0;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
+        <a href="/" class="btn-voltar">← Voltar ao Menu</a>
+        
         <h1>📋 Lista de Pacientes</h1>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
         {% if pacientes %}
+            <p class="info-total">Total: {{ pacientes|length }} paciente(s) cadastrado(s)</p>
+            
             <table class="tabela-pacientes">
                 <thead>
                     <tr>
@@ -64,6 +32,7 @@
                         <th>Nome</th>
                         <th>Idade</th>
                         <th>Telefone</th>
+                        <th>Data Cadastro</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
@@ -74,11 +43,12 @@
                         <td>{{ paciente.nome }}</td>
                         <td>{{ paciente.idade }} anos</td>
                         <td>{{ paciente.telefone }}</td>
+                        <td>{{ paciente.data_cadastro }}</td>
                         <td>
+                            <a href="/editar/{{ paciente.id }}" class="btn-editar" title="Editar">✏️</a>
                             <a href="/deletar/{{ paciente.id }}" class="btn-deletar" 
-                               onclick="return confirm('Tem certeza que deseja excluir este paciente?')">
-                                🗑️ Deletar
-                            </a>
+                               onclick="return confirm('Tem certeza que deseja excluir {{ paciente.nome }}?')" 
+                               title="Deletar">🗑️</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -88,9 +58,7 @@
             <p class="mensagem-vazio">Nenhum paciente cadastrado ainda.</p>
         {% endif %}
 
-        <a class="link" href="/">➕ Cadastrar Novo Paciente</a>
+        <a class="link" href="/cadastrar-form">➕ Cadastrar Novo Paciente</a>
     </div>
 </body>
 </html>
-```
-
