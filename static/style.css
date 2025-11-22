@@ -6,7 +6,7 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -25,7 +25,7 @@ body {
 }
 
 h1 {
-    color: #667eea;
+    color: #1abc9c;
     text-align: center;
     margin-bottom: 10px;
     font-size: 28px;
@@ -53,7 +53,7 @@ h2 {
 }
 
 .menu-item {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #e8f9f5 0%, #c8f3ea 100%);
     padding: 30px 20px;
     border-radius: 12px;
     text-decoration: none;
@@ -64,8 +64,8 @@ h2 {
 
 .menu-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-    border-color: #667eea;
+    box-shadow: 0 8px 25px rgba(26, 188, 156, 0.3);
+    border-color: #1abc9c;
 }
 
 .menu-item .icon {
@@ -90,14 +90,14 @@ h2 {
 .btn-voltar {
     display: inline-block;
     margin-bottom: 20px;
-    color: #667eea;
+    color: #1abc9c;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
 }
 
 .btn-voltar:hover {
-    color: #764ba2;
+    color: #16a085;
 }
 
 /* FORMULÁRIOS */
@@ -130,12 +130,12 @@ input {
 
 input:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: #1abc9c;
+    box-shadow: 0 0 0 3px rgba(26, 188, 156, 0.1);
 }
 
 button[type="submit"] {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
     color: white;
     padding: 15px;
     border: none;
@@ -149,7 +149,7 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 20px rgba(26, 188, 156, 0.4);
 }
 
 button[type="submit"]:active {
@@ -171,7 +171,7 @@ button[type="submit"]:active {
 }
 
 .campo-busca button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
     color: white;
     padding: 12px 30px;
     border: none;
@@ -184,7 +184,7 @@ button[type="submit"]:active {
 
 .campo-busca button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    box-shadow: 0 5px 15px rgba(26, 188, 156, 0.4);
 }
 
 /* ESTATÍSTICAS */
@@ -196,7 +196,7 @@ button[type="submit"]:active {
 }
 
 .stat-card {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #e8f9f5 0%, #c8f3ea 100%);
     padding: 25px;
     border-radius: 12px;
     text-align: center;
@@ -216,7 +216,7 @@ button[type="submit"]:active {
 }
 
 .stat-number {
-    color: #667eea;
+    color: #16a085;
     font-size: 32px;
     font-weight: bold;
 }
@@ -236,7 +236,7 @@ button[type="submit"]:active {
 }
 
 .tabela-pacientes th {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
     color: white;
     font-weight: 600;
 }
@@ -315,14 +315,14 @@ button[type="submit"]:active {
     display: block;
     text-align: center;
     margin-top: 25px;
-    color: #667eea;
+    color: #1abc9c;
     text-decoration: none;
     font-weight: 600;
     transition: color 0.3s ease;
 }
 
 .link:hover {
-    color: #764ba2;
+    color: #16a085;
     text-decoration: underline;
 }
 
