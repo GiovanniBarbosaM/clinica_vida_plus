@@ -46,9 +46,9 @@
                         <td>{{ paciente.data_cadastro }}</td>
                         <td>
                             <a href="/editar/{{ paciente.id }}" class="btn-editar" title="Editar">✏️</a>
-                            <a href="/deletar/{{ paciente.id }}" class="btn-deletar" 
-                               onclick="return confirm('Tem certeza que deseja excluir {{ paciente.nome }}?')" 
-                               title="Deletar">🗑️</a>
+                            <a href="/deletar/{{ paciente.id }}/confirmar" class="btn-deletar" 
+   onclick="return confirm('Tem certeza que deseja excluir {{ paciente.nome }}?')" 
+   title="Deletar">🗑️</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -58,7 +58,7 @@
             <p class="mensagem-vazio">Nenhum paciente cadastrado ainda.</p>
         {% endif %}
 
-        <a class="link" href="/cadastrar-form">➕ Cadastrar Novo Paciente</a>
+        <a class="link" href="/cadastrar">➕ Cadastrar Novo Paciente</a>
     </div>
 </body>
 </html>

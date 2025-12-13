@@ -12,10 +12,10 @@
         
         <h1>🔍 Buscar Paciente</h1>
 
-        <form action="/buscar" method="post" class="form-busca">
+        <form action="/buscar" method="get" class="form-busca">
             <div class="campo-busca">
-                <input type="text" name="busca" placeholder="Digite o nome ou ID do paciente" 
-                       value="{{ termo }}" required>
+                <input type="text" name="q" placeholder="Digite o nome ou ID do paciente" 
+       value="{{ termo }}" required>
                 <button type="submit">Buscar</button>
             </div>
         </form>
@@ -42,8 +42,8 @@
                             <td>{{ paciente.telefone }}</td>
                             <td>
                                 <a href="/editar/{{ paciente.id }}" class="btn-editar">✏️</a>
-                                <a href="/deletar/{{ paciente.id }}" class="btn-deletar"
-                                   onclick="return confirm('Tem certeza?')">🗑️</a>
+                                <a href="/deletar/{{ paciente.id }}/confirmar" class="btn-deletar"
+   onclick="return confirm('Tem certeza?')">🗑️</a>
                             </td>
                         </tr>
                         {% endfor %}

@@ -12,7 +12,7 @@
         
         <h1>✏️ Editar Paciente</h1>
 
-        <form action="/editar/{{ paciente.id }}" method="post" class="form-paciente">
+        <form action="/editar/{{ paciente.id }}/salvar" method="post" class="form-paciente">
             <div class="campo">
                 <label for="nome">Nome do Paciente:</label>
                 <input type="text" id="nome" name="nome" value="{{ paciente.nome }}" required>
