@@ -3,14 +3,14 @@ import json
 import os
 from datetime import datetime
 
-# CONFIGURAÇÃO DA APLICAÇÃO
+# CONFIGURAÇÃO DA APLICAÇÃO 
 
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_aqui_123'
 
 ARQUIVO_PACIENTES = 'pacientes.json'
 
-# FUNÇÕES AUXILIARES
+#  FUNÇÕES AUXILIARES
 
 def carregar_pacientes():
     if os.path.exists(ARQUIVO_PACIENTES):
@@ -47,33 +47,27 @@ def calcular_estatisticas():
         'mais_velho': max(idades)
     }
 
-# CREATE 
+# ROTA PRINCIPAL
 
-def criar_paciente(nome, idade, telefone):
-    pacientes = carregar_pacientes()
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-    novo_paciente = {
-        'id': gerar_novo_id(pacientes),
-        'nome': nome,
-        'idade': idade,
-        'telefone': telefone,
-        'data_cadastro': datetime.now().strftime('%d/%m/%Y %H:%M')
-    }
+# CREATE
 
-    pacientes.append(novo_paciente)
-    salvar_pacientes(pacientes)
-    return novo_paciente
-
-@app.route('/cadastrar')
+@app.route('/cadastrar', methods=['GET'])
 def cadastrar_form():
+    """Exibe o formulário de cadastro de novo paciente"""
     return render_template('cadastrar.html')
 
-@app.route('/cadastrar/salvar', methods=['POST'])
-def cadastrar():
+@app.route('/pacientes', methods=['POST'])
+def criar_paciente():
+    """Cria um novo paciente no sistema - Método POST"""
     nome = request.form.get('nome')
     idade = request.form.get('idade')
     telefone = request.form.get('telefone')
 
+    # Validações
     if not nome or not idade or not telefone:
         flash('Todos os campos são obrigatórios!', 'error')
         return redirect(url_for('cadastrar_form'))
@@ -82,24 +76,44 @@ def cadastrar():
         flash('Idade deve ser um número!', 'error')
         return redirect(url_for('cadastrar_form'))
 
-    criar_paciente(nome, idade, telefone)
+    # Criar paciente
+    pacientes = carregar_pacientes()
+    novo_paciente = {
+        'id': gerar_novo_id(pacientes),
+        'nome': nome,
+        'idade': idade,
+        'telefone': telefone,
+        'data_cadastro': datetime.now().strftime('%d/%m/%Y %H:%M')
+    }
+    pacientes.append(novo_paciente)
+    salvar_pacientes(pacientes)
+
     flash(f'Paciente {nome} cadastrado com sucesso!', 'success')
     return redirect(url_for('listar_pacientes'))
 
+#READ
 
-# READ 
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-@app.route('/pacientes')
+@app.route('/pacientes', methods=['GET'])
 def listar_pacientes():
+    """Lista todos os pacientes cadastrados - Método GET"""
     pacientes = carregar_pacientes()
     return render_template('pacientes.html', pacientes=pacientes)
 
-@app.route('/buscar')
+@app.route('/pacientes/<int:paciente_id>', methods=['GET'])
+def buscar_paciente(paciente_id):
+    """Busca um paciente específico por ID - Método GET"""
+    pacientes = carregar_pacientes()
+    paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
+    
+    if not paciente:
+        flash('Paciente não encontrado!', 'error')
+        return redirect(url_for('listar_pacientes'))
+    
+    return render_template('visualizar.html', paciente=paciente)
+
+@app.route('/buscar', methods=['GET'])
 def buscar_pagina():
+    """Busca pacientes por nome ou ID - Método GET"""
     termo_busca = request.args.get('q', '').lower()
 
     if not termo_busca:
@@ -113,15 +127,17 @@ def buscar_pagina():
 
     return render_template('buscar.html', resultado=resultado, termo=termo_busca)
 
-@app.route('/estatisticas')
+@app.route('/estatisticas', methods=['GET'])
 def estatisticas():
+    """Exibe estatísticas dos pacientes cadastrados - Método GET"""
     stats = calcular_estatisticas()
     return render_template('estatisticas.html', stats=stats)
 
-# UPDATE 
+# UPDATE
 
-@app.route('/editar/<int:paciente_id>')
+@app.route('/editar/<int:paciente_id>', methods=['GET'])
 def editar_form(paciente_id):
+    """Exibe o formulário de edição de um paciente"""
     pacientes = carregar_pacientes()
     paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
 
@@ -131,8 +147,9 @@ def editar_form(paciente_id):
 
     return render_template('editar.html', paciente=paciente)
 
-@app.route('/editar/<int:paciente_id>/salvar', methods=['POST'])
-def editar(paciente_id):
+@app.route('/pacientes/<int:paciente_id>', methods=['PUT', 'POST'])
+def atualizar_paciente(paciente_id):
+    """Atualiza os dados de um paciente - Método PUT"""
     pacientes = carregar_pacientes()
     paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
 
@@ -140,18 +157,20 @@ def editar(paciente_id):
         flash('Paciente não encontrado!', 'error')
         return redirect(url_for('listar_pacientes'))
 
+    # Atualizar dados
     paciente['nome'] = request.form.get('nome')
     paciente['idade'] = request.form.get('idade')
     paciente['telefone'] = request.form.get('telefone')
 
     salvar_pacientes(pacientes)
-    flash(f'Dados de {paciente['nome']} atualizados!', 'success')
+    flash(f'Dados de {paciente["nome"]} atualizados!', 'success')
     return redirect(url_for('listar_pacientes'))
 
-# DELETE 
+#  DELETE
 
-@app.route('/deletar/<int:paciente_id>/confirmar', methods=['GET', 'POST'])
-def deletar(paciente_id):
+@app.route('/pacientes/<int:paciente_id>', methods=['DELETE', 'POST'])
+def deletar_paciente(paciente_id):
+    """Remove um paciente do sistema - Método DELETE"""
     pacientes = carregar_pacientes()
     paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
 
@@ -159,13 +178,14 @@ def deletar(paciente_id):
         flash('Paciente não encontrado!', 'error')
         return redirect(url_for('listar_pacientes'))
 
+    # Remover paciente
     pacientes = [p for p in pacientes if p['id'] != paciente_id]
     salvar_pacientes(pacientes)
 
-    flash(f'Paciente {paciente['nome']} foi removido!', 'success')
+    flash(f'Paciente {paciente["nome"]} foi removido!', 'success')
     return redirect(url_for('listar_pacientes'))
 
-# RUN
+# ==================== EXECUÇÃO ====================
 
 if __name__ == '__main__':
     app.run(debug=True)
