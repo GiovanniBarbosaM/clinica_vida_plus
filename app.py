@@ -1,16 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, request, jsonify
 import json
 import os
 from datetime import datetime
 
-# CONFIGURAÇÃO DA APLICAÇÃO 
-
 app = Flask(__name__)
-app.secret_key = 'sua_chave_secreta_aqui_123'
 
 ARQUIVO_PACIENTES = 'pacientes.json'
 
-#  FUNÇÕES AUXILIARES
+#  FUNÇÕES AUXILIARES 
 
 def carregar_pacientes():
     if os.path.exists(ARQUIVO_PACIENTES):
@@ -23,169 +20,89 @@ def salvar_pacientes(pacientes):
         json.dump(pacientes, arquivo, ensure_ascii=False, indent=4)
 
 def gerar_novo_id(pacientes):
-    if not pacientes:
-        return 1
-    return max(p['id'] for p in pacientes) + 1
+    return max([p['id'] for p in pacientes], default=0) + 1
 
-def calcular_estatisticas():
-    pacientes = carregar_pacientes()
+#  CREATE 
 
-    if not pacientes:
-        return {
-            'total': 0,
-            'media_idade': 0,
-            'mais_jovem': None,
-            'mais_velho': None
-        }
-
-    idades = [int(p['idade']) for p in pacientes]
-
-    return {
-        'total': len(pacientes),
-        'media_idade': round(sum(idades) / len(idades), 1),
-        'mais_jovem': min(idades),
-        'mais_velho': max(idades)
-    }
-
-# ROTA PRINCIPAL
-
-@app.route('/')
-def index():
-    return render_template('index.html')
-
-# CREATE
-
-@app.route('/cadastrar', methods=['GET'])
-def cadastrar_form():
-    """Exibe o formulário de cadastro de novo paciente"""
-    return render_template('cadastrar.html')
-
-@app.route('/pacientes', methods=['POST'])
+@app.route('/api/pacientes', methods=['POST'])
 def criar_paciente():
-    """Cria um novo paciente no sistema - Método POST"""
-    nome = request.form.get('nome')
-    idade = request.form.get('idade')
-    telefone = request.form.get('telefone')
+    dados = request.get_json()
 
-    # Validações
+    if not dados:
+        return jsonify({"erro": "JSON inválido"}), 400
+
+    nome = dados.get('nome')
+    idade = dados.get('idade')
+    telefone = dados.get('telefone')
+
     if not nome or not idade or not telefone:
-        flash('Todos os campos são obrigatórios!', 'error')
-        return redirect(url_for('cadastrar_form'))
+        return jsonify({"erro": "Campos obrigatórios"}), 400
 
-    if not str(idade).isdigit():
-        flash('Idade deve ser um número!', 'error')
-        return redirect(url_for('cadastrar_form'))
-
-    # Criar paciente
     pacientes = carregar_pacientes()
+
     novo_paciente = {
-        'id': gerar_novo_id(pacientes),
-        'nome': nome,
-        'idade': idade,
-        'telefone': telefone,
-        'data_cadastro': datetime.now().strftime('%d/%m/%Y %H:%M')
+        "id": gerar_novo_id(pacientes),
+        "nome": nome,
+        "idade": idade,
+        "telefone": telefone,
+        "data_cadastro": datetime.now().strftime('%d/%m/%Y %H:%M')
     }
+
     pacientes.append(novo_paciente)
     salvar_pacientes(pacientes)
 
-    flash(f'Paciente {nome} cadastrado com sucesso!', 'success')
-    return redirect(url_for('listar_pacientes'))
+    return jsonify(novo_paciente), 201
 
-#READ
+#  READ 
 
-@app.route('/pacientes', methods=['GET'])
+@app.route('/api/pacientes', methods=['GET'])
 def listar_pacientes():
-    """Lista todos os pacientes cadastrados - Método GET"""
-    pacientes = carregar_pacientes()
-    return render_template('pacientes.html', pacientes=pacientes)
+    return jsonify(carregar_pacientes()), 200
 
-@app.route('/pacientes/<int:paciente_id>', methods=['GET'])
+@app.route('/api/pacientes/<int:paciente_id>', methods=['GET'])
 def buscar_paciente(paciente_id):
-    """Busca um paciente específico por ID - Método GET"""
-    pacientes = carregar_pacientes()
-    paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
-    
-    if not paciente:
-        flash('Paciente não encontrado!', 'error')
-        return redirect(url_for('listar_pacientes'))
-    
-    return render_template('visualizar.html', paciente=paciente)
-
-@app.route('/buscar', methods=['GET'])
-def buscar_pagina():
-    """Busca pacientes por nome ou ID - Método GET"""
-    termo_busca = request.args.get('q', '').lower()
-
-    if not termo_busca:
-        return render_template('buscar.html', resultado=None, termo='')
-
-    pacientes = carregar_pacientes()
-    resultado = [
-        p for p in pacientes
-        if termo_busca in p['nome'].lower() or termo_busca == str(p['id'])
-    ]
-
-    return render_template('buscar.html', resultado=resultado, termo=termo_busca)
-
-@app.route('/estatisticas', methods=['GET'])
-def estatisticas():
-    """Exibe estatísticas dos pacientes cadastrados - Método GET"""
-    stats = calcular_estatisticas()
-    return render_template('estatisticas.html', stats=stats)
-
-# UPDATE
-
-@app.route('/editar/<int:paciente_id>', methods=['GET'])
-def editar_form(paciente_id):
-    """Exibe o formulário de edição de um paciente"""
     pacientes = carregar_pacientes()
     paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
 
     if not paciente:
-        flash('Paciente não encontrado!', 'error')
-        return redirect(url_for('listar_pacientes'))
+        return jsonify({"erro": "Paciente não encontrado"}), 404
 
-    return render_template('editar.html', paciente=paciente)
+    return jsonify(paciente), 200
 
-@app.route('/pacientes/<int:paciente_id>', methods=['PUT', 'POST'])
+# = UPDATE 
+
+@app.route('/api/pacientes/<int:paciente_id>', methods=['PUT'])
 def atualizar_paciente(paciente_id):
-    """Atualiza os dados de um paciente - Método PUT"""
+    dados = request.get_json()
     pacientes = carregar_pacientes()
+
     paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
-
     if not paciente:
-        flash('Paciente não encontrado!', 'error')
-        return redirect(url_for('listar_pacientes'))
+        return jsonify({"erro": "Paciente não encontrado"}), 404
 
-    # Atualizar dados
-    paciente['nome'] = request.form.get('nome')
-    paciente['idade'] = request.form.get('idade')
-    paciente['telefone'] = request.form.get('telefone')
+    paciente['nome'] = dados.get('nome', paciente['nome'])
+    paciente['idade'] = dados.get('idade', paciente['idade'])
+    paciente['telefone'] = dados.get('telefone', paciente['telefone'])
 
     salvar_pacientes(pacientes)
-    flash(f'Dados de {paciente["nome"]} atualizados!', 'success')
-    return redirect(url_for('listar_pacientes'))
+    return jsonify(paciente), 200
 
-#  DELETE
+#  DELETE 
 
-@app.route('/pacientes/<int:paciente_id>', methods=['DELETE', 'POST'])
+@app.route('/api/pacientes/<int:paciente_id>', methods=['DELETE'])
 def deletar_paciente(paciente_id):
-    """Remove um paciente do sistema - Método DELETE"""
     pacientes = carregar_pacientes()
     paciente = next((p for p in pacientes if p['id'] == paciente_id), None)
 
     if not paciente:
-        flash('Paciente não encontrado!', 'error')
-        return redirect(url_for('listar_pacientes'))
+        return jsonify({"erro": "Paciente não encontrado"}), 404
 
-    # Remover paciente
     pacientes = [p for p in pacientes if p['id'] != paciente_id]
     salvar_pacientes(pacientes)
 
-    flash(f'Paciente {paciente["nome"]} foi removido!', 'success')
-    return redirect(url_for('listar_pacientes'))
+    return '', 204
 
-# ==================== EXECUÇÃO ====================
+#  EXECUÇÃO 
 
 if __name__ == '__main__':
     app.run(debug=True)
